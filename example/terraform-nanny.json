@@ -10,6 +10,9 @@
         "test",
         "production"
       ]
-    }
+    },
+    {
+      "folder": "tf-20-nodiff"
+    },
   ]
 }
