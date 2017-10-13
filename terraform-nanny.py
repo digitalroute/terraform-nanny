@@ -6,21 +6,12 @@
 import sys
 import json
 import shlex
-import configparser
 from subprocess import Popen, PIPE, STDOUT
-
-
-# Read config
-config = configparser.ConfigParser()
-config.read('nanny.ini')
 
 
 # Variables
 jobFile = 'terraform-nanny.json'
 errors = 0
-
-if config.has_option('alert', 'command'):
-    alertCmd = config.get('alert', 'command')
 
 
 # Functions
@@ -60,6 +51,10 @@ def run_terraform(workspace=None, directory='.'):
 # Read workspaces.json
 with open(jobFile) as json_data:
     job = json.load(json_data)
+
+    # Should we alert
+    if job['alert']:
+        alertCmd = job['alert']
 
     # For all folders, run plan on all defined workspaces
     for task in job['tasks']:
