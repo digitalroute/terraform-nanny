@@ -39,7 +39,7 @@ def run_terraform(workspace=None, directory='.'):
     elif result[1] == 2:
         return('Diff found!\n' + result[0])
     else:
-        errors += 1
+        global errors += 1
         return('Something went wrong!\n' + result[0])
 
 
