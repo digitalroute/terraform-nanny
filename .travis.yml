@@ -6,4 +6,5 @@ install:
   - sudo unzip terraform.zip -d /opt/terraform
   - sudo ln -s /opt/terraform/terraform /usr/bin/terraform
   - rm -f terraform.zip
-script: python terraform-nanny.py
+  - cp terraform-nanny.py example/
+script: cd example && python terraform-nanny.py
