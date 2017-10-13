@@ -48,6 +48,7 @@ with open(jobFile) as json_data:
     # For all folders, run plan on all defined workspaces
     for task in job['tasks']:
         msg = 'For folder "' + task['folder'] + '" '
+        run_command('terraform init', '.')
         if 'workspaces' in task:
             msg += str(len(task['workspaces'])) + ' workspaces found'
             print(msg)
