@@ -6,12 +6,21 @@
 import sys
 import json
 import shlex
+import configparser
 from subprocess import Popen, PIPE, STDOUT
+
+
+# Read config
+config = configparser.ConfigParser()
+config.read('nanny.ini')
 
 
 # Variables
 jobFile = 'terraform-nanny.json'
 errors = 0
+
+if config.has_option('alert', 'command'):
+    alertCmd = config.get('alert', 'command')
 
 
 # Functions
@@ -37,6 +46,10 @@ def run_terraform(workspace=None, directory='.'):
     if result[1] == 0:
         return('No diff found!')
     elif result[1] == 2:
+        if alertCmd:
+            alertCmdFormatted = alertCmd.format(project=directory,
+                                                workspace=workspace)
+            run_command(alertCmdFormatted, '.')
         return('Diff found!\n' + result[0])
     else:
         global errors
