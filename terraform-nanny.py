@@ -11,6 +11,7 @@ from subprocess import Popen, PIPE, STDOUT
 
 # Variables
 jobFile = 'terraform-nanny.json'
+errors = 0
 
 
 # Functions
@@ -38,6 +39,7 @@ def run_terraform(workspace=None, directory='.'):
     elif result[1] == 2:
         return('Diff found!\n' + result[0])
     else:
+        errors += 1
         return('Something went wrong!\n' + result[0])
 
 
@@ -62,4 +64,8 @@ with open(jobFile) as json_data:
             print('  ' + run_terraform(workspace=None,
                                        directory=task['folder']))
 
-sys.exit(0)
+# Check for errors
+if errors > 0:
+    sys.exit(1)
+else:
+    sys.exit(0)
