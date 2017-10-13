@@ -1,0 +1,15 @@
+{
+  "name": "example",
+  "tasks": [
+    {
+      "folder": "tf-00-bootstrap"
+    },
+    {
+      "folder": "tf-10-region",
+      "workspaces": [
+        "test",
+        "production"
+      ]
+    }
+  ]
+}
