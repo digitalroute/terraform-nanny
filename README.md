@@ -8,22 +8,14 @@ Enter Nanny! Enabled in your build-cyckle Terraform Nanny will read ```terraform
 
 Terraform Nanny will only fail your build if terraform for some reason breaks, Nanny's only job is to alert developers about plans not applied.
 
-## Install
+## Install & Run
 
-Using TravisCI, download the latest terraform-nanny.py in your install step and run.
-Terraform Nanny should run fine with your other build-steps.
+Use the pushed docker image in your buildstep to check your current source folder. You need to pass your credentials to the container.
 
 ```yml
 sudo: false
-python:
-  - 3.6
-install:
-  - curl -fSL "https://raw.githubusercontent.com/digitalroute/terraform-nanny/master/terraform-nanny.py" -o terraform-nanny.py
-script: python terraform-nanny.py
+services:
+  - docker
+script:
+  - docker run -e AWS_ACCESS_KEY_ID=<YOUR_KEY> -e AWS_SECRET_ACCESS_KEY=<YOUR_SECRET> -v `pwd`:/src digitalroute/terraform-nanny:latest
 ```
-
-## Docker image
-
-Use the pushed docker image in your buildstep to check your currnet source folder. You need to pass your credentials to the container.
-
-```docker run -e AWS_ACCESS_KEY_ID={YOUR_KEY} -e AWS_SECRET_ACCESS_KEY={YOUR_SECRET} -v `pwd`:/src digitalroute/terraform-nanny```
