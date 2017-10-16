@@ -16,6 +16,7 @@ errors = 0
 # Check for path prefix
 if len(sys.argv) > 1:
     pathPrefix = sys.argv[1]
+    jobFile = pathPrefix + '/' + jobFile
 else:
     pathPrefix = None
 
