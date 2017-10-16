@@ -7,6 +7,7 @@ import sys
 import json
 import shlex
 from subprocess import Popen, PIPE, STDOUT
+from termcolor import colored
 
 
 # Variables
@@ -32,36 +33,53 @@ def run_command(command, directory):
 
 
 def run_terraform(workspace=None, directory='.'):
+    cmd = "terraform plan -detailed-exitcode -lock=false"
+
     if workspace:
-        cmd = 'terraform plan -input=false -refresh=true -module-depth=-1 \
-        -var-file=terraform.tfvars -var-file=env/' + workspace + '.tfvars \
-        -detailed-exitcode'
-    else:
-        cmd = 'terraform plan -detailed-exitcode'
+        cmd += ' -input=false -module-depth=-1 -var-file=terraform.tfvars \
+        -var-file=env/' + workspace + '.tfvars'
+
+    if refreshCmd:
+        cmd += refreshCmd
 
     result = run_command(cmd, directory)
 
     if result[1] == 0:
-        return('No diff found!')
+        return(colored('No diff found!', 'green'))
     elif result[1] == 2:
         if alertCmd:
             alertCmdFormatted = alertCmd.format(project=directory,
                                                 workspace=workspace)
             run_command(alertCmdFormatted, '.')
-        return('Diff found!\n' + result[0])
+        return(colored('Diff found!\n' + result[0], 'yellow'))
     else:
         global errors
         errors += 1
-        return('Something went wrong!\n' + result[0])
+        return(colored('Something went wrong!\n' + result[0], 'red'))
 
 
 # Read workspaces.json
 with open(jobFile) as json_data:
     job = json.load(json_data)
 
+    print('\n' + colored('Running Terraform Nanny with:',
+                         'magenta', attrs=['bold']))
+
     # Should we alert
     if job['alert']:
         alertCmd = job['alert']
+        print('  Alert\t\t' + colored('True', 'green'))
+    else:
+        alertCmd = None
+        print('  Alert\t\t' + colored('False', 'red'))
+
+    # Should we run plan without refresh
+    if job['refresh'] and job['refresh'] is True:
+        refreshCmd = ' -refresh=true'
+        print('  Refresh\t\t' + colored('True', 'green'))
+    else:
+        refreshCmd = None
+        print('  Refresh\t\t' + colored('False', 'red'))
 
     # For all folders, run plan on all defined workspaces
     for task in job['tasks']:

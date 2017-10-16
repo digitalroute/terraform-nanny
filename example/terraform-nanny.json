@@ -1,6 +1,7 @@
 {
   "name": "example",
   "alert": "curl -H \"Content-Type: application/json\" -X POST -d '{{\"color\": \"purple\", \"message_format\": \"text\", \"message\": \"We found a plan that has not been applied inside {project} and workspace {workspace}\"}}' https://your.chat.provider.local/api/message/token",
+  "refresh": true,
   "tasks": [
     {
       "folder": "tf-00-bootstrap"
