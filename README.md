@@ -21,3 +21,9 @@ install:
   - curl -fSL "https://raw.githubusercontent.com/digitalroute/terraform-nanny/master/terraform-nanny.py" -o terraform-nanny.py
 script: python terraform-nanny.py
 ```
+
+## Docker image
+
+Use the pushed docker image in your buildstep to check your currnet source folder. You need to pass your credentials to the container.
+
+```docker run -e AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY --entrypoint terraform-nanny -v `pwd`:/src digitalroute/terraform-nanny /src```
