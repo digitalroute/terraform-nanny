@@ -13,6 +13,12 @@ from subprocess import Popen, PIPE, STDOUT
 jobFile = 'terraform-nanny.json'
 errors = 0
 
+# Check for path prefix
+if len(sys.argv) > 1:
+    pathPrefix = sys.argv[1]
+else:
+    pathPrefix = None
+
 
 # Functions
 def run_command(command, directory):
@@ -58,20 +64,26 @@ with open(jobFile) as json_data:
 
     # For all folders, run plan on all defined workspaces
     for task in job['tasks']:
-        msg = 'For folder "' + task['folder'] + '" '
-        run_command('terraform init', task['folder'])
+        # Check for path prefix
+        if pathPrefix:
+            currentFolder = pathPrefix + '/' + task['folder']
+        else:
+            currentFolder = task['folder']
+
+        msg = 'For folder "' + currentFolder + '" '
+        run_command('terraform init', currentFolder)
         if 'workspaces' in task:
             msg += str(len(task['workspaces'])) + ' workspaces found'
             print(msg)
             for workspace in task['workspaces']:
                 print('  ' + workspace)
                 print('    ' + run_terraform(workspace=workspace,
-                                             directory=task['folder']))
+                                             directory=currentFolder))
         else:
             msg += 'no workspaces found'
             print(msg)
             print('  ' + run_terraform(workspace=None,
-                                       directory=task['folder']))
+                                       directory=currentFolder))
 
 # Check for errors
 if errors > 0:
