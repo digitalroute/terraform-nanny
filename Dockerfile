@@ -10,3 +10,5 @@ RUN apk add --no-cache python3 && \
 
 COPY terraform-nanny.py /usr/bin/terraform-nanny
 RUN chmod +x /usr/bin/terraform-nanny
+
+ENTRYPOINT ["terraform-nanny", "/src"]

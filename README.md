@@ -26,4 +26,4 @@ script: python terraform-nanny.py
 
 Use the pushed docker image in your buildstep to check your currnet source folder. You need to pass your credentials to the container.
 
-```docker run  -e AWS_ACCESS_KEY_ID={YOUR_KEY} -e AWS_SECRET_ACCESS_KEY={YOUR_SECRET} --entrypoint terraform-nanny -v `pwd`:/src digitalroute/terraform-nanny /src```
+```docker run -e AWS_ACCESS_KEY_ID={YOUR_KEY} -e AWS_SECRET_ACCESS_KEY={YOUR_SECRET} -v `pwd`:/src digitalroute/terraform-nanny```
