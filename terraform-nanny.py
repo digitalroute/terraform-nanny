@@ -68,10 +68,10 @@ with open(jobFile) as json_data:
     # Should we alert
     if job['alert']:
         alertCmd = job['alert']
-        print('  Alert\t\t' + colored('True', 'green'))
+        print('  Alert  \t' + colored('True', 'green'))
     else:
         alertCmd = None
-        print('  Alert\t\t' + colored('False', 'red'))
+        print('  Alert  \t' + colored('False', 'red'))
 
     # Should we run plan without refresh
     if job['refresh']:
@@ -81,6 +81,8 @@ with open(jobFile) as json_data:
         else:
             refreshCmd = None
             print('  Refresh\t' + colored('False', 'red'))
+
+    print('\n')
 
     # For all folders, run plan on all defined workspaces
     for task in job['tasks']:
