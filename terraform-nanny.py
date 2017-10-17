@@ -38,6 +38,8 @@ def run_command(command, directory):
 def run_terraform(workspace=None, directory='.'):
     cmd = "terraform plan -detailed-exitcode -lock=false"
 
+    project = directory.split('/')[-1]
+
     if workspace:
         cmd += ' -input=false -module-depth=-1 -var-file=terraform.tfvars \
         -var-file=env/' + workspace + '.tfvars'
@@ -51,7 +53,7 @@ def run_terraform(workspace=None, directory='.'):
         return(colored('No diff found!', 'green'))
     elif result[1] == 2:
         if alertCmd:
-            alertCmdFormatted = alertCmd.format(project=directory,
+            alertCmdFormatted = alertCmd.format(project=project,
                                                 workspace=workspace)
             run_command(alertCmdFormatted, '.')
         return(colored('Diff found!\n' + result[0], 'yellow'))
