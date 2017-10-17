@@ -13,6 +13,9 @@ from termcolor import colored
 # Variables
 jobFile = 'terraform-nanny.json'
 errors = 0
+alertCmd = None
+refreshCmd = None
+
 
 # Check for path prefix
 if len(sys.argv) > 1:
@@ -70,7 +73,6 @@ with open(jobFile) as json_data:
         alertCmd = job['alert']
         print('  Alert  \t' + colored('True', 'green'))
     else:
-        alertCmd = None
         print('  Alert  \t' + colored('False', 'red'))
 
     # Should we run plan without refresh
