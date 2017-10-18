@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-# This script will check all terraform workspaces defined in tf_workspaces.json
+# This script will check all terraform plans and workspaces defined in terraform-nanny.json
 
 # Imports
 import sys
@@ -32,7 +32,7 @@ def run_command(command, directory):
     return (output.decode('utf-8'), proc.returncode)
 
 
-def run_terraform(workspace=None, directory='.'):
+def run_terraform(workspace=None, directory='.', refreshCmd=None):
     cmd = "terraform plan -detailed-exitcode -lock=false"
 
     if workspace:
@@ -100,7 +100,8 @@ with open(jobFile) as json_data:
             for workspace in task['workspaces']:
                 print('  ' + workspace)
                 print('    ' + run_terraform(workspace=workspace,
-                                             directory=currentFolder))
+                                             directory=currentFolder,
+                                             refreshCmd=refreshCmd))
         else:
             msg += 'no workspaces found'
             print(msg)
