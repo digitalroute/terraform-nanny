@@ -13,6 +13,9 @@ from termcolor import colored
 # Variables
 jobFile = 'terraform-nanny.json'
 errors = 0
+alertCmd = None
+refreshCmd = None
+
 
 # Check for path prefix
 if len(sys.argv) > 1:
@@ -35,6 +38,8 @@ def run_command(command, directory):
 def run_terraform(workspace=None, directory='.', refreshCmd=None):
     cmd = "terraform plan -detailed-exitcode -lock=false"
 
+    project = directory.split('/')[-1]
+
     if workspace:
         cmd += ' -input=false -module-depth=-1 -var-file=terraform.tfvars \
         -var-file=env/' + workspace + '.tfvars'
@@ -48,7 +53,7 @@ def run_terraform(workspace=None, directory='.', refreshCmd=None):
         return(colored('No diff found!', 'green'))
     elif result[1] == 2:
         if alertCmd:
-            alertCmdFormatted = alertCmd.format(project=directory,
+            alertCmdFormatted = alertCmd.format(project=project,
                                                 workspace=workspace)
             run_command(alertCmdFormatted, '.')
         return(colored('Diff found!\n' + result[0], 'yellow'))
@@ -70,7 +75,6 @@ with open(jobFile) as json_data:
         alertCmd = job['alert']
         print('  Alert  \t' + colored('True', 'green'))
     else:
-        alertCmd = None
         print('  Alert  \t' + colored('False', 'red'))
 
     # Should we run plan without refresh
