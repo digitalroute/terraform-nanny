@@ -36,11 +36,19 @@ def run_command(command, directory):
 
 
 def run_terraform(workspace=None, directory='.', refreshCmd=None):
+    global errors
+
     cmd = "terraform plan -detailed-exitcode -lock=false"
 
     project = directory.split('/')[-1]
 
     if workspace:
+        # Switch workspace
+        switch = run_command('terraform workspace select ' + workspace, directory)
+        if switch[1] != 0:
+            errors += 1
+            return(colored('Something went wrong!\n' + result[0], 'red'))
+
         cmd += ' -input=false -module-depth=-1 -var-file=terraform.tfvars \
         -var-file=env/' + workspace + '.tfvars'
 
@@ -58,7 +66,6 @@ def run_terraform(workspace=None, directory='.', refreshCmd=None):
             run_command(alertCmdFormatted, '.')
         return(colored('Diff found!\n' + result[0], 'yellow'))
     else:
-        global errors
         errors += 1
         return(colored('Something went wrong!\n' + result[0], 'red'))
 
