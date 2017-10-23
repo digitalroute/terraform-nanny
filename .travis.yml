@@ -4,6 +4,6 @@ services:
 install:
   - docker build -t terraform-nanny:local .
 before_script:
-  - cd example/tf-10-region && terraform workspace new production && terraform workspace new test
+  - cd example/tf-10-region && docker run -v `pwd`:/src --entrypoint "cd /src && terraform workspace new production && terraform workspace new test" terraform-nanny:local
 script:
   - cd example && docker run -v `pwd`:/src terraform-nanny:local
