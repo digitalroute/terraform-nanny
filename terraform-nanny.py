@@ -38,7 +38,7 @@ def run_command(command, directory):
 def run_terraform(workspace=None, directory='.', refreshCmd=None):
     global errors
 
-    cmd = "terraform plan -detailed-exitcode -lock=false"
+    cmd = "terraform plan -detailed-exitcode -lock=false -no-color"
 
     project = directory.split('/')[-1]
 
