@@ -14,6 +14,7 @@ from termcolor import colored
 jobFile = 'terraform-nanny.json'
 errors = 0
 alertCmd = None
+okCmd = None
 refreshCmd = None
 
 
@@ -77,12 +78,19 @@ with open(jobFile) as json_data:
     print('\n' + colored('Running Terraform Nanny with:',
                          'magenta', attrs=['bold']))
 
-    # Should we alert
+    # Should we send alert messages
     if job['alert']:
         alertCmd = job['alert']
         print('  Alert  \t' + colored('True', 'green'))
     else:
         print('  Alert  \t' + colored('False', 'red'))
+
+    # Should we send OK messages
+    if job['ok']:
+        okCmd = job['ok']
+        print('  Ok  \t' + colored('True', 'green'))
+    else:
+        print('  Ok  \t' + colored('False', 'red'))
 
     # Should we run plan without refresh
     if job['refresh']:
@@ -97,6 +105,9 @@ with open(jobFile) as json_data:
 
     # For all folders, run plan on all defined workspaces
     for task in job['tasks']:
+        # Keep track of current number of errors, to see if we add to them
+        errorsBeforeTask = errors
+
         # Check for path prefix
         if pathPrefix:
             currentFolder = pathPrefix + '/' + task['folder']
@@ -118,6 +129,12 @@ with open(jobFile) as json_data:
             print(msg)
             print('  ' + run_terraform(workspace=None,
                                        directory=currentFolder))
+
+        # Check for errors, else send okCmd
+        if okCmd:
+            if errors == errorsBeforeTask:
+                okCmdFormatted = okCmd.format(project=task['folder'])
+                run_command(okCmdFormatted, '.')
 
 # Check for errors
 if errors > 0:
