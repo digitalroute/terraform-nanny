@@ -4,6 +4,10 @@ services:
 install:
   - docker build -t terraform-nanny:local .
 before_script:
+  - curl -fSL "https://releases.hashicorp.com/terraform/10.0.7/terraform_10.0.7_linux_amd64.zip" -o terraform.zip
+  - sudo unzip terraform.zip -d /opt/terraform
+  - sudo ln -s /opt/terraform/terraform /usr/bin/terraform
+  - rm -f terraform.zip
   - cd example/tf-10-region && terraform workspace new production && terraform workspace new test
 script:
   - cd example && docker run -v `pwd`:/src terraform-nanny:local
