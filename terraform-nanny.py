@@ -47,7 +47,7 @@ def run_terraform(workspace=None, directory='.', refreshCmd=None):
         switch = run_command('terraform workspace select ' + workspace, directory)
         if switch[1] != 0:
             errors += 1
-            return(colored('Something went wrong!\n' + result[0], 'red'))
+            return(colored('Something went wrong!\n' + switch[0], 'red'))
 
         cmd += ' -input=false -module-depth=-1 -var-file=terraform.tfvars \
         -var-file=env/' + workspace + '.tfvars'
