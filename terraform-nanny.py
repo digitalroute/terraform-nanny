@@ -79,21 +79,21 @@ with open(jobFile) as json_data:
                          'magenta', attrs=['bold']))
 
     # Should we send alert messages
-    if job['alert']:
+    if 'alert' in job:
         alertCmd = job['alert']
         print('  Alert  \t' + colored('True', 'green'))
     else:
         print('  Alert  \t' + colored('False', 'red'))
 
     # Should we send OK messages
-    if job['ok']:
+    if 'ok' in job:
         okCmd = job['ok']
         print('  Ok  \t' + colored('True', 'green'))
     else:
         print('  Ok  \t' + colored('False', 'red'))
 
     # Should we run plan without refresh
-    if job['refresh']:
+    if 'refresh' in job:
         if job['refresh'] is True:
             refreshCmd = ' -refresh=true'
             print('  Refresh\t' + colored('True', 'green'))
