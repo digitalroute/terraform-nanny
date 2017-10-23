@@ -8,6 +8,7 @@ before_script:
   - sudo unzip terraform.zip -d /opt/terraform
   - sudo ln -s /opt/terraform/terraform /usr/bin/terraform
   - rm -f terraform.zip
-  - cd example/tf-10-region && terraform workspace new production && terraform workspace new test && cd
+  - cd example/tf-10-region && terraform workspace new production && terraform workspace new test && cd ..
 script:
+  - pwd && ls -l
   - cd example && docker run -v `pwd`:/src terraform-nanny:local
