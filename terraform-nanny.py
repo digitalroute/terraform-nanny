@@ -41,7 +41,7 @@ def run_terraform(workspace=None, directory='.', refreshCmd=None):
 
     cmd = "terraform plan -detailed-exitcode -lock=false -no-color"
 
-    project = directory.split('/')[-1]
+    folder = directory.split('/')[-1]
 
     if workspace:
         # Switch workspace
@@ -63,6 +63,7 @@ def run_terraform(workspace=None, directory='.', refreshCmd=None):
     elif result[1] == 2:
         if alertCmd:
             alertCmdFormatted = alertCmd.format(project=project,
+                                                folder=folder,
                                                 workspace=workspace)
             run_command(alertCmdFormatted, '.')
         return(colored('Diff found!\n' + result[0], 'yellow'))
@@ -77,6 +78,12 @@ with open(jobFile) as json_data:
 
     print('\n' + colored('Running Terraform Nanny with:',
                          'magenta', attrs=['bold']))
+
+    if 'name' in job:
+        project = job['name']
+    else:
+        print(colored('Exit: Name is missing in terraform-nanny.json', 'red'))
+        sys.exit(1)
 
     # Should we send alert messages
     if 'alert' in job:
@@ -133,7 +140,7 @@ with open(jobFile) as json_data:
         # Check for errors, else send okCmd
         if okCmd:
             if errors == errorsBeforeTask:
-                okCmdFormatted = okCmd.format(project=task['folder'])
+                okCmdFormatted = okCmd.format(project=project, folder=currentFolder)
                 run_command(okCmdFormatted, '.')
 
 # Check for errors
