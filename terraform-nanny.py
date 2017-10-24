@@ -140,7 +140,7 @@ with open(jobFile) as json_data:
         # Check for errors, else send okCmd
         if okCmd:
             if errors == errorsBeforeTask:
-                okCmdFormatted = okCmd.format(project=project, folder=currentFolder)
+                okCmdFormatted = okCmd.format(project=project, folder=task['folder'])
                 run_command(okCmdFormatted, '.')
 
 # Check for errors
