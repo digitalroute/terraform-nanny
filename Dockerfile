@@ -16,4 +16,6 @@ RUN pip3 install -r requirements.txt
 COPY terraform-nanny.py /usr/bin/terraform-nanny
 RUN chmod +x /usr/bin/terraform-nanny
 
-ENTRYPOINT ["terraform-nanny", "/src"]
+WORKDIR "/src"
+
+ENTRYPOINT ["terraform-nanny"]
