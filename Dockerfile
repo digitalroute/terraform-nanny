@@ -1,7 +1,7 @@
 FROM hashicorp/terraform:light
 
 # Install python3
-RUN apk add --no-cache python3 && \
+RUN apk add --no-cache python3 bash jq && \
     python3 -m ensurepip && \
     rm -r /usr/lib/python*/ensurepip && \
     pip3 install --upgrade pip setuptools && \
