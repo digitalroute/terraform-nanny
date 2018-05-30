@@ -13,6 +13,7 @@ from termcolor import colored
 # Variables
 jobFile = 'terraform-nanny.json'
 errors = 0
+planErrors = 0
 alertCmd = None
 okCmd = None
 refreshCmd = None
@@ -37,7 +38,7 @@ def run_command(command, directory):
 
 
 def run_terraform(workspace=None, directory='.', refreshCmd=None):
-    global errors
+    global errors, planErrors
 
     cmd = "terraform plan -detailed-exitcode -lock=false -no-color"
 
@@ -61,7 +62,7 @@ def run_terraform(workspace=None, directory='.', refreshCmd=None):
     if result[1] == 0:
         return(colored('No diff found!', 'green'))
     elif result[1] == 2:
-        errors += 1
+        planErrors += 1
         if alertCmd:
             alertCmdFormatted = alertCmd.format(project=project,
                                                 folder=folder,
@@ -113,8 +114,8 @@ with open(jobFile) as json_data:
 
     # For all folders, run plan on all defined workspaces
     for task in job['tasks']:
-        # Keep track of current number of errors, to see if we add to them
-        errorsBeforeTask = errors
+        # Keep track of current number of planErrors, to see if we add to them
+        planErrorsBeforeTask = planErrors
 
         # Check for path prefix
         if pathPrefix:
@@ -140,7 +141,7 @@ with open(jobFile) as json_data:
 
         # Check for errors, else send okCmd
         if okCmd:
-            if errors == errorsBeforeTask:
+            if errors == planErrorsBeforeTask:
                 okCmdFormatted = okCmd.format(project=project, folder=task['folder'])
                 run_command(okCmdFormatted, '.')
 
