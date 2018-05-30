@@ -61,6 +61,7 @@ def run_terraform(workspace=None, directory='.', refreshCmd=None):
     if result[1] == 0:
         return(colored('No diff found!', 'green'))
     elif result[1] == 2:
+        errors += 1
         if alertCmd:
             alertCmdFormatted = alertCmd.format(project=project,
                                                 folder=folder,
